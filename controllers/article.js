@@ -166,6 +166,33 @@ var controller = {
                 mensaje: 'Wrong data!!!'
             });
         }
+    },
+
+    delete: (req, res) => {
+        //Get id from url
+        var articleId = req.params.id;
+
+        Article.findOneAndDelete({_id: articleId}, (err, articleRemoved) => {
+            if (err) {
+                return res.status(500).send({
+                    status: 'error',
+                    mensaje: 'Error on deleting article'
+                });
+            }
+
+            if (!articleRemoved) {
+                return res.status(404).send({
+                    status: 'error',
+                    mensaje: 'No article found'
+                });
+            }
+
+            //Respuesta
+            return res.status(200).send({
+                status: 'success',
+                article: articleRemoved
+            });
+        });
     }
 }
 
