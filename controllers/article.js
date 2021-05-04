@@ -53,6 +53,41 @@ var controller = {
                 mensaje: 'Wrong data!!!'
             });
         }
+    },
+
+    getArticles: (req, res) => {
+        //Variable query
+        var query = Article.find({});
+
+        var last = req.params.last;
+        
+        if (last || last != undefined) {
+            query.limit(parseInt(last));
+        }
+
+        //search articles
+        query.sort('-_id').exec((err, articles) => {
+
+            if (err) {
+                return res.status(500).send({
+                    status: 'error',
+                    mensaje: 'Error on retrieving articles'
+                });
+            }
+
+            if (!articles) {
+                return res.status(404).send({
+                    status: 'error',
+                    mensaje: 'No articles'
+                });
+            }
+
+            return res.status(200).send({
+                status: 'success',
+                articles
+            });
+
+        });        
     }
 }
 
