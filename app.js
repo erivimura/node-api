@@ -8,7 +8,7 @@ var bodyParser = require("body-parser");
 var app = express();
 
 //Load Routes
-
+var articleRoutes = require('./routes/article');
 
 //Middlewares
 app.use(bodyParser.urlencoded({extended:false}));
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 });
 
 //Add prefixe to routes
-
+app.use('/api', articleRoutes);
 
 //Export module
 module.exports = app;
