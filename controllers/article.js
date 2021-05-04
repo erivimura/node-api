@@ -247,6 +247,22 @@ var controller = {
                 });
             });            
         }
+    },
+
+    getImage: (req, res) => {
+        var file = req.params.image;
+        var filePath = './upload/articles/' + file;
+
+        fs.exists(filePath, (exists) => {
+            if (exists) {
+                return res.sendFile(path.resolve(filePath));
+            } else {
+                return res.status(404).send({
+                    status: 'error',
+                    mensaje: 'Imge not found!!!'
+                });
+            }
+        });        
     }
 }
 
