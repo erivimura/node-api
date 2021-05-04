@@ -1,6 +1,8 @@
 'use strict'
 
 var validator = require('validator');
+var fs = require('fs');
+var path = require('path');
 
 var Article = require('../models/article');
 
@@ -193,6 +195,58 @@ var controller = {
                 article: articleRemoved
             });
         });
+    },
+
+    upload: (req, res) => {
+        //Get file from request
+        var fileName = 'No Imagen...';
+
+        if (!req.files) {
+            return res.status(404).send({
+                status: 'error',
+                mensaje: filename
+            }); 
+        }
+
+        //Get name and extension of the file
+        var filePath = req.files.file0.path;
+        var fileSplit = filePath.split('\\'); //In linux or mac: ('/')
+
+        //File name
+        fileName = fileSplit[2];
+
+        //File Extension
+        var extSplit = fileName.split('.');
+        var ext = extSplit[1].toLowerCase();
+
+        //Check extensions (jist images)
+        if (ext != 'png' && ext != 'jpg' && ext != 'jpeg' && ext != 'gif') {
+            //delete file
+            fs.unlink(filePath, (err) => {
+                return res.status(200).send({
+                    status: 'error',
+                    mensaje: 'Wrong extension!!!'
+                });
+            });
+        } else {
+            var articleId = req.params.id;
+
+            //Find article
+            Article.findOneAndUpdate({_id: articleId}, {image: fileName}, {new: true}, (err, articleUpdated) => {
+                if (err || !articleUpdated) {
+                    return res.status(500).send({
+                        status: 'error',
+                        mensaje: 'Error on upload the image'
+                    });
+                }
+
+                //Response
+                return res.status(200).send({
+                    status: 'success',
+                    mensaje: 'Imagen loaded'
+                });
+            });            
+        }
     }
 }
 

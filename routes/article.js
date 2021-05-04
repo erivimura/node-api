@@ -2,6 +2,8 @@
 
 var express = require('express');
 var ArticleController = require('../controllers/article');
+var multiparty = require('connect-multiparty');
+var md_upload = multiparty({uploadDir: './upload/articles'});
 
 var router = express.Router();
 
@@ -10,5 +12,6 @@ router.get('/articles/:last?', ArticleController.getArticles); //The '?' indicat
 router.get('/article/:id', ArticleController.getArticle);
 router.put('/article/:id', ArticleController.update);
 router.delete('/article/:id', ArticleController.delete);
+router.post('/upload-image/:id', md_upload, ArticleController.upload);
 
 module.exports = router;
