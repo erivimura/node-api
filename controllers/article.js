@@ -88,6 +88,34 @@ var controller = {
             });
 
         });        
+    },
+
+    getArticle: (req, res) => {
+        //get id from url
+        var articleId = req.params.id;
+        
+        //check that exists
+        if (!articleId || articleId == null) {
+            return res.status(400).send({
+                status: 'error',
+                mensaje: 'Article id missing!!!'
+            });
+        }
+
+        //Find the article
+        Article.findById(articleId, (err, article) => {
+            if (err || !article) {
+                return res.status(404).send({
+                    status: 'error',
+                    mensaje: 'Article not found'
+                });
+            }
+
+            return res.status(200).send({
+                status: 'success',
+                article
+            });
+        });        
     }
 }
 
