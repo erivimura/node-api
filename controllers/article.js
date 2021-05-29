@@ -31,7 +31,12 @@ var controller = {
             //Set values
             article.title = params.title;
             article.content = params.content;
-            article.image = null;
+
+            if (params.image) {
+                article.image = params.image;
+            } else {
+                article.image = null;
+            }            
 
             //Save
             article.save((err, articleStored) => {
@@ -231,21 +236,34 @@ var controller = {
         } else {
             var articleId = req.params.id;
 
-            //Find article
-            Article.findOneAndUpdate({_id: articleId}, {image: fileName}, {new: true}, (err, articleUpdated) => {
-                if (err || !articleUpdated) {
-                    return res.status(500).send({
-                        status: 'error',
-                        mensaje: 'Error on upload the image'
+            if (articleId) {
+
+                //Find article
+                Article.findOneAndUpdate({_id: articleId}, {image: fileName}, {new: true}, (err, articleUpdated) => {
+                    if (err || !articleUpdated) {
+                        return res.status(500).send({
+                            status: 'error',
+                            mensaje: 'Error on upload the image'
+                        });
+                    }
+
+                    //Response
+                    return res.status(200).send({
+                        status: 'success',
+                        mensaje: 'Imagen loaded'
                     });
-                }
+                });     
+
+            } else {
 
                 //Response
                 return res.status(200).send({
                     status: 'success',
-                    mensaje: 'Imagen loaded'
+                    image: fileName
                 });
-            });            
+
+            }
+                   
         }
     },
 
